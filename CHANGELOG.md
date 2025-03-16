@@ -1,5 +1,11 @@
 # CHANGELOG
 
+### 3.1.0 (2025-03-16)
+
+- bump @kubernetes/client-node to 1.1.0
+- fix CVE-2025-1302 (jsonpath-plus)
+- bump some other dependencies
+
 ### 3.0.0 (2025-02-20)
 
 - bump @kubernetes/client-node to 1.0.0

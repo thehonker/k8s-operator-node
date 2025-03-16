@@ -1,6 +1,6 @@
 {
   "name": "@dot-i/k8s-operator",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Build Kubernetes operators in NodeJS (and TypeScript)",
   "author": {
     "name": "Nico Francois",
@@ -22,22 +22,22 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@kubernetes/client-node": "^1.0.0",
+    "@kubernetes/client-node": "^1.1.0",
     "async": "^3.2.6",
     "gaxios": "^6.7.1"
   },
   "devDependencies": {
-    "@eslint/js": "^9.20.0",
+    "@eslint/js": "^9.22.0",
     "@types/async": "^3.2.24",
     "@types/byline": "^4.2.36",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^18",
-    "@types/ws": "^8.5.14",
-    "eslint": "^9.20.1",
+    "@types/ws": "^8.18.0",
+    "eslint": "^9.22.0",
     "mkdirp": "^3.0.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.3",
-    "typescript-eslint": "^8.24.1"
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.26.1"
   },
   "scripts": {
     "lint": "eslint ./src",
