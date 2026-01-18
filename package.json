@@ -1,14 +1,11 @@
 {
-  "name": "@dot-i/k8s-operator",
+  "name": "@thehonker/k8s-operator",
   "version": "3.1.0",
   "description": "Build Kubernetes operators in NodeJS (and TypeScript)",
-  "author": {
-    "name": "Nico Francois",
-    "email": "nico.francois@dot-i.com"
-  },
+  "author": "Edwin Pers <pers.edwin@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dot-i/k8s-operator-node"
+    "url": "https://github.com/thehonker/k8s-operator-node"
   },
   "files": [
     "dist/*.ts",
@@ -20,6 +17,9 @@
   "types": "dist/operator.d.ts",
   "engines": {
     "node": ">=18"
+  },
+  "publishConfig": {
+    "@thehonker:registry": "https://npm.pkg.github.com/"
   },
   "dependencies": {
     "@kubernetes/client-node": "^1.1.0",
