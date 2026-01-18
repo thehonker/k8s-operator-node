@@ -5,7 +5,7 @@
   "author": "Edwin Pers <pers.edwin@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/thehonker/k8s-operator-node"
+    "url": "git+https://github.com/thehonker/k8s-operator-node.git"
   },
   "files": [
     "dist/*.ts",
