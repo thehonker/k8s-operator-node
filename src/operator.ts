@@ -102,10 +102,10 @@ export class ResourceMetaImpl implements ResourceMeta {
 /**
  * Base class for an operator.
  */
-export default abstract class Operator {
-    protected kubeConfig: k8s.KubeConfig;
-    protected k8sApi: k8s.CoreV1Api;
-    protected logger: OperatorLogger;
+export default class Operator {
+    public kubeConfig: k8s.KubeConfig;
+    public k8sApi: k8s.CoreV1Api;
+    public logger: OperatorLogger;
 
     private resourcePathBuilders: Record<string, (meta: ResourceMeta) => string> = {};
     private watchRequests: Record<string, { abort(): void }> = {};
@@ -117,9 +117,8 @@ export default abstract class Operator {
     /**
      * Constructs an operator.
      */
-    constructor(logger?: OperatorLogger) {
-        this.kubeConfig = new k8s.KubeConfig();
-        this.kubeConfig.loadFromDefault();
+    constructor(kubeConfig: k8s.KubeConfig, logger?: OperatorLogger) {
+        this.kubeConfig = kubeConfig;
         this.k8sApi = this.kubeConfig.makeApiClient(k8s.CoreV1Api);
         this.logger = logger || new NullLogger();
 
@@ -130,13 +129,6 @@ export default abstract class Operator {
         }>(async (args) => await args.onEvent(args.event));
     }
 
-    /**
-     * Run the operator, typically called from main().
-     */
-    public async start(): Promise<void> {
-        await this.init();
-    }
-
     public stop(): void {
         for (const req of Object.values(this.watchRequests)) {
             req.abort();
@@ -144,15 +136,10 @@ export default abstract class Operator {
     }
 
     /**
-     * Initialize the operator, add your resource watchers here.
-     */
-    protected abstract init(): Promise<void>;
-
-    /**
      * Register a custom resource defintion.
      * @param crdFile The path to the custom resource definition's YAML file
      */
-    protected async registerCustomResourceDefinition(crdFile: string): Promise<{
+    public async registerCustomResourceDefinition(crdFile: string): Promise<{
         group: string;
         versions: V1CustomResourceDefinitionVersion[];
         plural: string;
@@ -188,7 +175,7 @@ export default abstract class Operator {
      * @param plural The plural name of the custom resource
      * @param namespace Optional namespace to include in the uri
      */
-    protected getCustomResourceApiUri(group: string, version: string, plural: string, namespace?: string): string {
+    public getCustomResourceApiUri(group: string, version: string, plural: string, namespace?: string): string {
         let path = group ? `/apis/${group}/${version}/` : `/api/${version}/`;
         if (namespace) {
             path += `namespaces/${namespace}/`;
@@ -205,7 +192,7 @@ export default abstract class Operator {
      * @param onEvent The async callback for added, modified or deleted events on the resource
      * @param namespace The namespace of the resource (optional)
      */
-    protected async watchResource(
+    public async watchResource(
         group: string,
         version: string,
         plural: string,
@@ -268,7 +255,7 @@ export default abstract class Operator {
      * @param meta The resource to update
      * @param status The status body to set
      */
-    protected async setResourceStatus(meta: ResourceMeta, status: unknown): Promise<ResourceMeta | null> {
+    public async setResourceStatus(meta: ResourceMeta, status: unknown): Promise<ResourceMeta | null> {
         return await this.resourceStatusRequest('PUT', meta, status);
     }
 
@@ -277,7 +264,7 @@ export default abstract class Operator {
      * @param meta The resource to update
      * @param status The status body to set in JSON Merge Patch format (https://tools.ietf.org/html/rfc7386)
      */
-    protected async patchResourceStatus(meta: ResourceMeta, status: unknown): Promise<ResourceMeta | null> {
+    public async patchResourceStatus(meta: ResourceMeta, status: unknown): Promise<ResourceMeta | null> {
         return await this.resourceStatusRequest('PATCH', meta, status);
     }
 
@@ -291,7 +278,7 @@ export default abstract class Operator {
      * @param deleteAction An async action that will be called before your resource is deleted.
      * @returns True if no further action is needed, false if you still need to process the added or modified event yourself.
      */
-    protected async handleResourceFinalizer(
+    public async handleResourceFinalizer(
         event: ResourceEvent,
         finalizer: string,
         deleteAction: (event: ResourceEvent) => Promise<void>
@@ -325,7 +312,7 @@ export default abstract class Operator {
      * @param meta The resource to update
      * @param finalizers The array of finalizers for this resource
      */
-    protected async setResourceFinalizers(meta: ResourceMeta, finalizers: string[]): Promise<void> {
+    public async setResourceFinalizers(meta: ResourceMeta, finalizers: string[]): Promise<void> {
         const options: GaxiosOptions = {
             method: 'PATCH',
             url: `${this.resourcePathBuilders[meta.id](meta)}/${meta.name}`,
@@ -353,7 +340,7 @@ export default abstract class Operator {
      * Apply authentication to an axios request config.
      * @param request the axios request config
      */
-    protected async applyAxiosKubeConfigAuth(request: {
+    public async applyAxiosKubeConfigAuth(request: {
         headers?: Record<string, string | number | boolean>;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         httpsAgent?: any;
@@ -385,7 +372,7 @@ export default abstract class Operator {
      * Apply authentication to an axios request config.
      * @param options the axios request config
      */
-    protected async applyGaxiosKubeConfigAuth(options: {
+    public async applyGaxiosKubeConfigAuth(options: {
         headers?: Headers;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         agent?: any;
@@ -408,7 +395,7 @@ export default abstract class Operator {
         }
     }
 
-    private async resourceStatusRequest(
+    public async resourceStatusRequest(
         method: 'PUT' | 'PATCH',
         meta: ResourceMeta,
         status: unknown
@@ -446,7 +433,7 @@ export default abstract class Operator {
         }
     }
 
-    private errorToJson(err: unknown): string {
+    public errorToJson(err: unknown): string {
         if (typeof err === 'string') {
             return err;
         } else if ((err as Error)?.message && (err as Error).stack) {
