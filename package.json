@@ -1,11 +1,11 @@
 {
   "name": "@thehonker/k8s-operator",
-  "version": "3.1.0",
+  "version": "3.1.1-alpha.7",
   "description": "Build Kubernetes operators in NodeJS (and TypeScript)",
   "author": "Edwin Pers <pers.edwin@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/thehonker/k8s-operator-node"
+    "url": "git+https://github.com/thehonker/k8s-operator-node.git"
   },
   "files": [
     "dist/*.ts",
