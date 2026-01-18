@@ -41,6 +41,7 @@ jobs:
       - name: Build and Publish
         shell: bash
         run: |
+          npm ci
           npm publish --tag latest
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
